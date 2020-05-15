@@ -2,8 +2,6 @@ word = { ASCII_ALPHA+ }
 words = !{ word+ }
 enclosed = ${
     "(" ~ words ~ ")" |
-    "[" ~ words ~ "]" |
-    "{" ~ words ~ "}" |
     ", " ~ words ~ ","
 }
 chunk = @{ words | enclosed }
