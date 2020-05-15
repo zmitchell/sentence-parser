@@ -24,5 +24,12 @@ mod tests {
             let parsed = SentenceParser::parse(Rule::word, s.as_str());
             prop_assert!(parsed.is_err());
         }
+
+        #[test]
+        fn parses_valid_words(s in "([a-zA-Z]+ )+") {
+            let parsed = SentenceParser::parse(Rule::words, s.as_str());
+            prop_assert!(parsed.is_ok());
+        }
+
     }
 }
