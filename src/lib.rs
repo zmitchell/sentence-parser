@@ -151,5 +151,10 @@ mod tests {
             prop_assert!(parsed.is_err());
         }
 
+        #[test]
+        fn parses_valid_enclosed_chunk(enc in valid_enclosed()) {
+            let parsed = SentenceParser::parse(Rule::chunk, enc.as_str());
+            prop_assert!(parsed.is_ok());
+        }
     }
 }
