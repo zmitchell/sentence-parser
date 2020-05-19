@@ -108,6 +108,14 @@ mod tests {
         })
     }
 
+    fn punctuation() -> impl Strategy<Value = String> {
+        prop_oneof![
+            Just(String::from(".")),
+            Just(String::from("?")),
+            Just(String::from("!")),
+        ]
+    }
+
     proptest!{
         #[test]
         fn parses_valid_word(s in "[a-zA-Z]+") {
@@ -155,6 +163,18 @@ mod tests {
         fn parses_valid_enclosed_chunk(enc in valid_enclosed()) {
             let parsed = SentenceParser::parse(Rule::chunk, enc.as_str());
             prop_assert!(parsed.is_ok());
+        }
+
+        #[test]
+        fn parses_valid_punctuation(s in punctuation()) {
+            let parsed = SentenceParser::parse(Rule::punctuation, s.as_str());
+            prop_assert!(parsed.is_ok());
+        }
+
+        #[test]
+        fn rejects_invalid_punctuation(s in "[^\\.\\?!]") {
+            let parsed = SentenceParser::parse(Rule::punctuation, s.as_str());
+            prop_assert!(parsed.is_err());
         }
     }
 }
