@@ -1,10 +1,10 @@
 word = { ASCII_ALPHA+ }
-words = !{ word+ }
+words = ${ word ~ (" " ~ word)* }
 enclosed = ${
     "(" ~ words ~ ")" |
     ", " ~ words ~ ","
 }
 chunk = @{ words | enclosed }
 punctuation = { "." | "!" | "?" }
-sentence = { SOI ~ chunk+ ~ punctuation ~ EOI }
+sentence = @{ SOI ~ chunk ~ (" " ~ chunk)* ~ punctuation ~ EOI }
 WHITESPACE = _{" "}
