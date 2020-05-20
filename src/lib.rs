@@ -116,6 +116,28 @@ mod tests {
         ]
     }
 
+    fn chunk() -> impl Strategy<Value = String> {
+        prop_oneof![
+            words(),
+            valid_enclosed(),
+        ]
+    }
+
+    fn chunks() -> impl Strategy<Value = String> {
+        proptest::collection::vec(chunk(), 1..10).prop_map(|cs| {
+            cs.join(" ")
+        })
+    }
+
+    fn valid_sentence() -> impl Strategy<Value = String> {
+        (chunks(), punctuation()).prop_map(|(cs, p)| {
+            let mut sentence = String::new();
+            sentence.push_str(cs.as_str());
+            sentence.push_str(p.as_str());
+            sentence
+        })
+    }
+
     proptest!{
         #[test]
         fn parses_valid_word(s in "[a-zA-Z]+") {
@@ -174,6 +196,36 @@ mod tests {
         #[test]
         fn rejects_invalid_punctuation(s in "[^\\.\\?!]") {
             let parsed = SentenceParser::parse(Rule::punctuation, s.as_str());
+            prop_assert!(parsed.is_err());
+        }
+
+        #[test]
+        fn parses_valid_sentence(s in valid_sentence()) {
+            let parsed = SentenceParser::parse(Rule::sentence, s.as_str());
+            prop_assert!(parsed.is_ok());
+        }
+
+        #[test]
+        fn rejects_missing_punctuation(s in chunks()) {
+            let parsed = SentenceParser::parse(Rule::sentence, s.as_str());
+            prop_assert!(parsed.is_err());
+        }
+
+        #[test]
+        fn rejects_trailing_characters(s in valid_sentence(), t in "[\\sa-zA-Z]+") {
+            let input = [s.as_str(), t.as_str()].join(" ");
+            let parsed = SentenceParser::parse(Rule::sentence, input.as_str());
+            prop_assert!(parsed.is_err());
+        }
+
+        #[test]
+        fn rejects_missing_space_between_chunks(
+            w in words(),
+            enc in valid_enclosed(),
+            p in punctuation()
+        ) {
+            let input = [w, enc, p].join("");
+            let parsed = SentenceParser::parse(Rule::sentence, input.as_str());
             prop_assert!(parsed.is_err());
         }
     }

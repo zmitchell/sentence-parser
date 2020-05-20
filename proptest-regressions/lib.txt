@@ -6,3 +6,7 @@
 # everyone who runs the test benefits from these saved cases.
 cc 9c961e06a4aa1f88a4d2883c864c691f43e2e7d88f25170e437da33bb9d1968f # shrinks to s = "𑇜"
 cc 76aa0014841b93dee3bb9de007d5433a2c1a42f6ba858bc7d2fb47a2180748cf # shrinks to s = "t"
+cc 669b73080f4720ceaa26899b1adae44cba146d8f3c9ddeddc5f812b98423079f # shrinks to s = "a.", t = " "
+cc 59a71d9c2b74e8325a03b933332b34fa136825578da4c9bd076dbb2a0c8d5375 # shrinks to s = "a (a)."
+cc a58954fbbc72d7f27de67e873dc3dced086122ffe0e56ab38c55c17b384ba6ec # shrinks to cs = ["a"], p = "."
+cc 1302a34d896f070a1238b830aff1f32deb653a24fb06d2f918ef1243b7a03c0b # shrinks to cs = ["a", "a"], p = "."
