@@ -166,8 +166,8 @@ mod tests {
         }
 
         #[test]
-        fn parses_valid_words(s in words()) {
-            let parsed = SentenceParser::parse(Rule::words, s.as_str());
+        fn parses_valid_words(ws in words()) {
+            let parsed = SentenceParser::parse(Rule::words, w.as_str());
             prop_assert!(parsed.is_ok());
         }
 
