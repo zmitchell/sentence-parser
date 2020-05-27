@@ -167,13 +167,7 @@ mod tests {
 
         #[test]
         fn parses_valid_words(ws in words()) {
-            let parsed = SentenceParser::parse(Rule::words, w.as_str());
-            prop_assert!(parsed.is_ok());
-        }
-
-        #[test]
-        fn parses_valid_words_chunk(s in words()) {
-            let parsed = SentenceParser::parse(Rule::chunk, s.as_str());
+            let parsed = SentenceParser::parse(Rule::words, ws.as_str());
             prop_assert!(parsed.is_ok());
         }
 
@@ -196,24 +190,28 @@ mod tests {
         }
 
         #[test]
+        fn parses_valid_words_chunk(ws in words()) {
+            let parsed = SentenceParser::parse(Rule::chunk, ws.as_str());
+            prop_assert!(parsed.is_ok());
+        }
+
+        #[test]
         fn parses_valid_enclosed_chunk(enc in valid_enclosed()) {
             let parsed = SentenceParser::parse(Rule::chunk, enc.as_str());
             prop_assert!(parsed.is_ok());
         }
 
         #[test]
-        fn parses_valid_punctuation(s in punctuation()) {
-            let parsed = SentenceParser::parse(Rule::punctuation, s.as_str());
-            prop_assert!(parsed.is_ok());
-        }
-
-        #[test]
-        fn rejects_invalid_punctuation(s in "[^\\.\\?!]") {
-            let parsed = SentenceParser::parse(Rule::punctuation, s.as_str());
+        fn rejects_mismatched_delim_chunk(enc in invalid_enclosed()) {
+            let parsed = SentenceParser::parse(Rule::chunk, enc.as_str());
             prop_assert!(parsed.is_err());
         }
 
         #[test]
+        fn rejects_missing_delim_chunk(enc in missing_closing_delimiter()) {
+            let parsed = SentenceParser::parse(Rule::chunk, enc.as_str());
+            prop_assert!(parsed.is_err());
+        }
         fn parses_valid_sentence(s in valid_sentence()) {
             let parsed = SentenceParser::parse(Rule::sentence, s.as_str());
             prop_assert!(parsed.is_ok());
