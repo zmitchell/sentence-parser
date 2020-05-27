@@ -146,6 +146,12 @@ mod tests {
         })
     }
 
+    #[test]
+    fn words_rejects_empty_string() {
+        let parsed = SentenceParser::parse(Rule::words, "");
+        assert!(parsed.is_err());
+    }
+
     proptest!{
         #[test]
         fn parses_valid_word(w in word()) {
