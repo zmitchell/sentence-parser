@@ -45,6 +45,14 @@ mod tests {
         }
     }
 
+    fn word() -> impl Strategy<Value = String> {
+        proptest::string::string_regex("[a-zA-Z]+").unwrap()
+    }
+
+    fn invalid_word() -> impl Strategy<Value = String> {
+        proptest::string::string_regex("[^a-zA-Z]*").unwrap()
+    }
+
     fn words() -> impl Strategy<Value = String> {
         proptest::string::string_regex("[a-z]+( [a-z]+)*").unwrap()
     }
@@ -140,14 +148,14 @@ mod tests {
 
     proptest!{
         #[test]
-        fn parses_valid_word(s in "[a-zA-Z]+") {
-            let parsed = SentenceParser::parse(Rule::word, s.as_str());
+        fn parses_valid_word(w in word()) {
+            let parsed = SentenceParser::parse(Rule::word, w.as_str());
             prop_assert!(parsed.is_ok());
         }
 
         #[test]
-        fn rejects_invalid_word(s in "[^a-zA-Z]*") {
-            let parsed = SentenceParser::parse(Rule::word, s.as_str());
+        fn rejects_invalid_word(w in invalid_word()) {
+            let parsed = SentenceParser::parse(Rule::word, w.as_str());
             prop_assert!(parsed.is_err());
         }
 
