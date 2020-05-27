@@ -124,6 +124,10 @@ mod tests {
         ]
     }
 
+    fn invalid_punctuation() -> impl Strategy<Value = String> {
+        proptest::string::string_regex("[^\\.\\?!]").unwrap()
+    }
+
     fn chunk() -> impl Strategy<Value = String> {
         prop_oneof![
             words(),
@@ -212,6 +216,20 @@ mod tests {
             let parsed = SentenceParser::parse(Rule::chunk, enc.as_str());
             prop_assert!(parsed.is_err());
         }
+
+        #[test]
+        fn parses_valid_punctuation(s in punctuation()) {
+            let parsed = SentenceParser::parse(Rule::punctuation, s.as_str());
+            prop_assert!(parsed.is_ok());
+        }
+
+        #[test]
+        fn rejects_invalid_punctuation(s in invalid_punctuation()) {
+            let parsed = SentenceParser::parse(Rule::punctuation, s.as_str());
+            prop_assert!(parsed.is_err());
+        }
+
+        #[test]
         fn parses_valid_sentence(s in valid_sentence()) {
             let parsed = SentenceParser::parse(Rule::sentence, s.as_str());
             prop_assert!(parsed.is_ok());
