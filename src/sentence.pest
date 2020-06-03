@@ -4,7 +4,7 @@ enclosed = ${
     "(" ~ words ~ ")" |
     ", " ~ words ~ ","
 }
-chunk = @{ words | enclosed }
+chunk = ${ words | enclosed }
 punctuation = { "." | "!" | "?" }
-sentence = @{ SOI ~ chunk ~ (" " ~ chunk)* ~ punctuation ~ EOI }
+sentence = ${ SOI ~ chunk ~ (" " ~ chunk)* ~ punctuation ~ EOI }
 WHITESPACE = _{" "}
